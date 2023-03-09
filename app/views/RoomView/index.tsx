@@ -75,7 +75,8 @@ import {
 	TThreadModel,
 	ICustomEmojis,
 	IEmoji,
-	TGetCustomEmoji
+	TGetCustomEmoji,
+	RoomType
 } from '../../definitions';
 import { E2E_MESSAGE_TYPE, E2E_STATUS, MESSAGE_TYPE_ANY_LOAD, MessageTypeLoad, themes } from '../../lib/constants';
 import { TListRef } from './List/List';
@@ -388,7 +389,7 @@ class RoomView extends React.Component<IRoomViewProps, IRoomViewState> {
 
 		if (appState === 'foreground' && appState !== prevProps.appState && this.rid) {
 			// Fire List.query() just to keep observables working
-			if (this.list && this.list.current) {
+			if (this.list && this.list.current && !isIOS) {
 				this.list.current?.query();
 			}
 		}
@@ -685,7 +686,11 @@ class RoomView extends React.Component<IRoomViewProps, IRoomViewState> {
 				await loadThreadMessages({ tmid: this.tmid, rid: this.rid });
 			} else {
 				const newLastOpen = new Date();
-				await RoomServices.getMessages(room);
+				await RoomServices.getMessages({
+					rid: room.rid,
+					t: room.t as RoomType,
+					...('lastOpen' in room && room.lastOpen ? { lastOpen: room.lastOpen } : {})
+				});
 
 				// if room is joined
 				if (joined && 'id' in room) {
@@ -780,13 +785,22 @@ class RoomView extends React.Component<IRoomViewProps, IRoomViewState> {
 		});
 	};
 
+	handleCloseEmoji = (action?: Function, params?: any) => {
+		if (this.messagebox?.current) {
+			return this.messagebox?.current.closeEmojiAndAction(action, params);
+		}
+		if (action) {
+			return action(params);
+		}
+	};
+
 	errorActionsShow = (message: TAnyMessageModel) => {
-		this.messagebox?.current?.closeEmojiAndAction(this.messageErrorActions?.showMessageErrorActions, message);
+		this.handleCloseEmoji(this.messageErrorActions?.showMessageErrorActions, message);
 	};
 
 	showActionSheet = (options: any) => {
 		const { showActionSheet } = this.props;
-		this.messagebox?.current?.closeEmojiAndAction(showActionSheet, options);
+		this.handleCloseEmoji(showActionSheet, options);
 	};
 
 	onEditInit = (message: TAnyMessageModel) => {
@@ -833,17 +847,19 @@ class RoomView extends React.Component<IRoomViewProps, IRoomViewState> {
 	showReactionPicker = () => {
 		const { showActionSheet } = this.props;
 		const { selectedMessage } = this.state;
-		showActionSheet({
-			children: (
-				<ReactionPicker message={selectedMessage} onEmojiSelected={this.onReactionPress} reactionClose={this.onReactionClose} />
-			),
-			snaps: [400],
-			enableContentPanningGesture: false
-		});
+		setTimeout(() => {
+			showActionSheet({
+				children: (
+					<ReactionPicker message={selectedMessage} onEmojiSelected={this.onReactionPress} reactionClose={this.onReactionClose} />
+				),
+				snaps: [400],
+				enableContentPanningGesture: false
+			});
+		}, 100);
 	};
 
 	onReactionInit = (message: TAnyMessageModel) => {
-		this.messagebox?.current?.closeEmojiAndAction(() => {
+		this.handleCloseEmoji(() => {
 			this.setState({ selectedMessage: message }, this.showReactionPicker);
 		});
 	};
@@ -858,7 +874,7 @@ class RoomView extends React.Component<IRoomViewProps, IRoomViewState> {
 		if (message.tmid && !this.tmid) {
 			return;
 		}
-		this.messagebox?.current?.closeEmojiAndAction(this.messageActions?.showMessageActions, message);
+		this.handleCloseEmoji(this.messageActions?.showMessageActions, message);
 	};
 
 	showAttachment = (attachment: IAttachment) => {
@@ -887,7 +903,7 @@ class RoomView extends React.Component<IRoomViewProps, IRoomViewState> {
 		this.setState({ selectedMessage: message });
 		const { showActionSheet } = this.props;
 		const { selectedMessage } = this.state;
-		this.messagebox?.current?.closeEmojiAndAction(showActionSheet, {
+		this.handleCloseEmoji(showActionSheet, {
 			children: <ReactionsList reactions={selectedMessage?.reactions} getCustomEmoji={this.getCustomEmoji} />,
 			snaps: ['50%', '80%'],
 			enableContentPanningGesture: false
@@ -1299,16 +1315,6 @@ class RoomView extends React.Component<IRoomViewProps, IRoomViewState> {
 		return false;
 	};
 
-	onLoadMoreMessages = (loaderItem: TAnyMessageModel) => {
-		const { room } = this.state;
-		return RoomServices.getMoreMessages({
-			rid: room.rid,
-			tmid: this.tmid,
-			t: room.t as any,
-			loaderItem
-		});
-	};
-
 	goToCannedResponses = () => {
 		const { room } = this.state;
 		Navigation.navigate('CannedResponsesListView', { rid: room.rid });
@@ -1335,7 +1341,9 @@ class RoomView extends React.Component<IRoomViewProps, IRoomViewState> {
 		if (item.t && MESSAGE_TYPE_ANY_LOAD.includes(item.t as MessageTypeLoad)) {
 			content = (
 				<LoadMore
-					load={() => this.onLoadMoreMessages(item)}
+					rid={room.rid}
+					t={room.t as RoomType}
+					loaderId={item.id}
 					type={item.t}
 					runOnRender={item.t === MessageTypeLoad.MORE && !previousItem}
 				/>
@@ -1381,7 +1389,7 @@ class RoomView extends React.Component<IRoomViewProps, IRoomViewState> {
 					jumpToMessage={this.jumpToMessageByUrl}
 					highlighted={highlightedMessage === item.id}
 					theme={theme}
-					closeEmojiAndAction={this.messagebox?.current?.closeEmojiAndAction}
+					closeEmojiAndAction={this.handleCloseEmoji}
 				/>
 			);
 		}
