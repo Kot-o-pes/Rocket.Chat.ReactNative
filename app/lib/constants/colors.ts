@@ -20,6 +20,11 @@ const mentions = {
 	mentionOtherColor: '#F3BE08'
 };
 
+const callButtons = {
+	cancelCallButton: '#F5455C',
+	acceptCallButton: '#158D65'
+};
+
 export const colors = {
 	light: {
 		backgroundColor: '#ffffff',
@@ -89,7 +94,16 @@ export const colors = {
 		conferenceCallEnabledIconBackground: '#156FF5',
 		conferenceCallPhotoBackground: '#E4E7EA',
 		textInputSecondaryBackground: '#E4E7EA',
-		...mentions
+		dotBg: '#a9cbff',
+		dotActiveBg: '#1d74f5',
+		gray300: '#5f656e',
+		gray100: '#CBCED1',
+		n900: '#1F2329',
+		statusBackgroundWarning: '#FFECAD',
+		statusFontOnWarning: '#B88D00',
+		overlayColor: '#1F2329B2',
+		...mentions,
+		...callButtons
 	},
 	dark: {
 		backgroundColor: '#030b1b',
@@ -119,7 +133,7 @@ export const colors = {
 		headerTintColor: '#f9f9f9',
 		headerTitleColor: '#f9f9f9',
 		headerSecondaryText: '#9297a2',
-		toastBackground: '#0C0D0F',
+		toastBackground: '#54585e',
 		videoBackground: '#1f2329',
 		favoriteBackground: '#ffbb00',
 		hideBackground: '#54585e',
@@ -158,8 +172,17 @@ export const colors = {
 		conferenceCallEnabledIcon: '#FFFFFF',
 		conferenceCallEnabledIconBackground: '#156FF5',
 		conferenceCallPhotoBackground: '#E4E7EA',
-		textInputSecondaryBackground: '#030b1b', // backgroundColor
-		...mentions
+		textInputSecondaryBackground: '#030b1b',
+		dotBg: '#a9cbff',
+		dotActiveBg: '#1d74f5',
+		gray300: '#5f656e',
+		gray100: '#CBCED1',
+		n900: '#FFFFFF',
+		statusBackgroundWarning: '#FFECAD',
+		statusFontOnWarning: '#B88D00',
+		overlayColor: '#1F2329B2',
+		...mentions,
+		...callButtons
 	},
 	black: {
 		backgroundColor: '#000000',
@@ -189,7 +212,7 @@ export const colors = {
 		headerTintColor: '#f9f9f9',
 		headerTitleColor: '#f9f9f9',
 		headerSecondaryText: '#b2b8c6',
-		toastBackground: '#0C0D0F',
+		toastBackground: '#54585e',
 		videoBackground: '#1f2329',
 		favoriteBackground: '#ffbb00',
 		hideBackground: '#54585e',
@@ -228,8 +251,17 @@ export const colors = {
 		conferenceCallEnabledIcon: '#FFFFFF',
 		conferenceCallEnabledIconBackground: '#156FF5',
 		conferenceCallPhotoBackground: '#E4E7EA',
-		textInputSecondaryBackground: '#000000', // backgroundColor
-		...mentions
+		textInputSecondaryBackground: '#000000',
+		dotBg: '#a9cbff',
+		dotActiveBg: '#1d74f5',
+		gray300: '#5f656e',
+		gray100: '#CBCED1',
+		n900: '#FFFFFF',
+		statusBackgroundWarning: '#FFECAD',
+		statusFontOnWarning: '#B88D00',
+		overlayColor: '#1F2329B2',
+		...mentions,
+		...callButtons
 	}
 };
 

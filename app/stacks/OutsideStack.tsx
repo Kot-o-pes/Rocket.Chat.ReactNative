@@ -23,7 +23,8 @@ const _OutsideStack = () => {
 	return (
 		<Outside.Navigator screenOptions={{ ...defaultHeader, ...themedHeader(theme), ...StackAnimation } as StackNavigationOptions}>
 			{/* <Outside.Screen name='NewServerView' component={NewServerView} options={NewServerView.navigationOptions} /> */}
-			<Outside.Screen name='WorkspaceView' component={WorkspaceView} options={WorkspaceView.navigationOptions} />
+			<Outside.Screen name='WorkspaceView' component={WorkspaceView} />
+			{/* @ts-ignore */}
 			<Outside.Screen name='LoginView' component={LoginView} options={LoginView.navigationOptions} />
 			<Outside.Screen name='ForgotPasswordView' component={ForgotPasswordView} />
 			<Outside.Screen name='SendEmailConfirmationView' component={SendEmailConfirmationView} />
@@ -49,11 +50,7 @@ const OutsideStackModal = () => {
 			screenOptions={{ ...defaultHeader, ...themedHeader(theme), ...ModalAnimation, presentation: 'transparentModal' }}
 		>
 			<OutsideModal.Screen name='OutsideStack' component={OutsideStack} options={{ headerShown: false }} />
-			<OutsideModal.Screen
-				name='AuthenticationWebView'
-				component={AuthenticationWebView}
-				options={AuthenticationWebView.navigationOptions}
-			/>
+			<OutsideModal.Screen name='AuthenticationWebView' component={AuthenticationWebView} />
 		</OutsideModal.Navigator>
 	);
 };
