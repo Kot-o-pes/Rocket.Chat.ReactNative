@@ -118,7 +118,7 @@ const SecurityPrivacyView = ({ navigation }: ISecurityPrivacyViewProps): JSX.Ele
 								)}
 							/>
 							<List.Separator />
-							<List.Item title='PrivacyPolicy' onPress={onPressPrivacyPolicy} showActionIndicator />
+							<List.Item title='Privacy_Policy' onPress={onPressPrivacyPolicy} showActionIndicator />
 							<List.Separator />
 							<List.Info info='Crash_report_disclaimer' />
 						</List.Section>
