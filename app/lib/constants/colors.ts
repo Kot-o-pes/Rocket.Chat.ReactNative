@@ -1,3 +1,5 @@
+export const BACKGROUND_PUSH_COLOR = '#F5455C';
+
 export const STATUS_COLORS: any = {
 	online: '#2de0a5',
 	busy: '#f5455c',
@@ -102,6 +104,15 @@ export const colors = {
 		statusBackgroundWarning: '#FFECAD',
 		statusFontOnWarning: '#B88D00',
 		overlayColor: '#1F2329B2',
+		buttonBackgroundPrimaryDefault: '#156FF5',
+		buttonBackgroundSecondaryDefault: '#E4E7EA',
+		buttonFontPrimary: '#FFFFFF',
+		buttonFontSecondary: '#1F2329',
+		fontDefault: '#2F343D',
+		strokeExtraLight: '#EBECEF',
+		strokeLight: '#CBCED1',
+		surfaceTint: '#F7F8FA',
+		fontDisabled: '#CBCED1',
 		...mentions,
 		...callButtons
 	},
@@ -181,6 +192,15 @@ export const colors = {
 		statusBackgroundWarning: '#FFECAD',
 		statusFontOnWarning: '#B88D00',
 		overlayColor: '#1F2329B2',
+		buttonBackgroundPrimaryDefault: '#3976D1',
+		buttonBackgroundSecondaryDefault: '#2F343D',
+		buttonFontPrimary: '#FFFFFF',
+		buttonFontSecondary: '#E4E7EA',
+		fontDefault: '#E4E7EA',
+		strokeExtraLight: '#2F343D',
+		strokeLight: '#333842',
+		surfaceTint: '#1F2329',
+		fontDisabled: '#60646C',
 		...mentions,
 		...callButtons
 	},
@@ -260,6 +280,15 @@ export const colors = {
 		statusBackgroundWarning: '#FFECAD',
 		statusFontOnWarning: '#B88D00',
 		overlayColor: '#1F2329B2',
+		buttonBackgroundPrimaryDefault: '#3976D1',
+		buttonBackgroundSecondaryDefault: '#2F343D',
+		buttonFontPrimary: '#FFFFFF',
+		buttonFontSecondary: '#E4E7EA',
+		fontDefault: '#E4E7EA',
+		strokeExtraLight: '#2F343D',
+		strokeLight: '#333842',
+		surfaceTint: '#1F2329',
+		fontDisabled: '#60646C',
 		...mentions,
 		...callButtons
 	}

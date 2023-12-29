@@ -202,7 +202,6 @@
   "Members": "Üyeler",
   "Mentions": "Bahsetmeler",
   "Message_actions": "İleti işlemleri",
-  "Message_pinned": "İleti sabitlendi",
   "Message_removed": "İleti kaldırıldı",
   "Message_starred": "İletia yıldız eklendi",
   "Message_unstarred": "İletiın yıldızı kaldırıldı",
@@ -342,7 +341,7 @@
   "Share": "Paylaş",
   "Share_Link": "Bağlantı paylaş",
   "Share_this_app": "Bu uygulamayı paylaş",
-  "Show_more": "Daha fazla göster..",
+  "Show_more": "Daha fazla göster",
   "Sign_Up": "Kaydol",
   "Sound": "Ses",
   "Star": "Yıldızla",
@@ -361,6 +360,7 @@
   "This_room_is_blocked": "Bu oda engellendi",
   "This_room_is_read_only": "Bu oda yazma kısıtlı",
   "Threads": "Başlıklar",
+  "Thread": "Başlık",
   "Timezone": "Saat dilimi",
   "topic": "konu",
   "Topic": "Konu",
@@ -505,5 +505,7 @@
   "Open_Livechats": "Devam Eden Sohbetler",
   "Broadcast_hint": "Yalnızca yetkili kullanıcılar yeni ileti yazabilir, ancak diğer kullanıcılar yanıt verebilir",
   "and_N_more": "ve {{count}} daha",
-  "Audio": "Ses"
+  "Audio": "Ses",
+  "The_user_wont_be_able_to_type_in_roomName": "Kullanıcı {{roomName}} içinde yazamayacak",
+  "The_user_will_be_able_to_type_in_roomName": "Kullanıcı {{roomName}} içinde yazabilecek"
 }

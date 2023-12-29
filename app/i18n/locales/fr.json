@@ -211,7 +211,6 @@
   "Members": "Membres",
   "Mentions": "Mentions",
   "Message_actions": "Actions de message",
-  "Message_pinned": "Message épinglé",
   "Message_removed": "Message supprimé",
   "Message_starred": "Message suivi",
   "Message_unstarred": "Message non suivi",
@@ -354,7 +353,7 @@
   "Share": "Partager",
   "Share_Link": "Partager le lien",
   "Share_this_app": "Partager cette application",
-  "Show_more": "Afficher plus..",
+  "Show_more": "Afficher plus",
   "Sign_Up": "S'inscrire",
   "Sound": "Son",
   "Star": "Mettre en favoris",
@@ -373,6 +372,7 @@
   "This_room_is_blocked": "Ce salon est bloqué",
   "This_room_is_read_only": "Ce salon est en lecture seule",
   "Threads": "Fils de discussions",
+  "Thread": "Fil de discussion",
   "Timezone": "Fuseau horaire",
   "topic": "sujet",
   "Topic": "Sujet",
@@ -617,5 +617,7 @@
   "Empty": "Vide",
   "Broadcast_hint": "Seuls les utilisateurs autorisés peuvent écrire de nouveaux messages, mais les autres utilisateurs pourront répondre.",
   "and_N_more": "et {{count}} de plus",
-  "Audio": "Audio"
+  "Audio": "Audio",
+  "The_user_wont_be_able_to_type_in_roomName": "L'utilisateur ne pourra pas écrire dans {{roomName}}",
+  "The_user_will_be_able_to_type_in_roomName": "L'utilisateur pourra écrire dans {{roomName}}"
 }
