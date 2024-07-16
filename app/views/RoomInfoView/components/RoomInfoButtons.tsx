@@ -8,6 +8,8 @@ import i18n from '../../../i18n';
 import { useVideoConf } from '../../../lib/hooks/useVideoConf';
 import { useTheme } from '../../../theme';
 import styles from '../styles';
+import { compareServerVersion } from '../../../lib/methods/helpers';
+import { useE2EEWarning } from '../hooks';
 
 function BaseButton({
 	danger,
@@ -25,13 +27,15 @@ function BaseButton({
 	enabled?: boolean;
 }): React.ReactElement | null {
 	const { colors } = useTheme();
-	const color = danger ? colors.dangerColor : colors.actionTintColor;
+	const color = danger ? colors.buttonBackgroundDangerDefault : colors.fontHint;
 
 	if (showIcon)
 		return (
 			<BorderlessButton enabled={enabled} testID={`room-info-view-${iconName}`} onPress={onPress} style={styles.roomButton}>
 				<CustomIcon name={iconName} size={30} color={color} />
-				<Text style={[styles.roomButtonText, { color }]}>{label}</Text>
+				<Text numberOfLines={1} style={[styles.roomButtonText, { color }]}>
+					{label}
+				</Text>
 			</BorderlessButton>
 		);
 	return null;
@@ -59,7 +63,10 @@ interface IRoomInfoButtons {
 	handleCreateDirectMessage: () => void;
 	handleIgnoreUser: () => void;
 	handleBlockUser: () => void;
+	handleReportUser: () => void;
 	roomFromRid: ISubscription | undefined;
+	serverVersion: string | null;
+	itsMe?: boolean;
 }
 
 export const RoomInfoButtons = ({
@@ -71,7 +78,10 @@ export const RoomInfoButtons = ({
 	handleCreateDirectMessage,
 	handleIgnoreUser,
 	handleBlockUser,
-	roomFromRid
+	handleReportUser,
+	roomFromRid,
+	serverVersion,
+	itsMe
 }: IRoomInfoButtons): React.ReactElement => {
 	const room = roomFromRid || roomFromProps;
 	// Following the web behavior, when is a DM with myself, shouldn't appear block or ignore option
@@ -80,28 +90,30 @@ export const RoomInfoButtons = ({
 	const isDirectFromSaved = isDirect && fromRid && room;
 	const isIgnored = room?.ignored?.includes?.(roomUserId || '');
 	const isBlocked = room?.blocker;
+	const hasE2EEWarning = useE2EEWarning(room);
 
 	const renderIgnoreUser = isDirectFromSaved && !isFromDm && !isDmWithMyself;
-	const renderBlockUser = isDirectFromSaved && isFromDm && !isDmWithMyself;
+	const renderBlockUser = !itsMe && isDirectFromSaved && isFromDm && !isDmWithMyself;
+	const renderReportUser =
+		!itsMe && isDirectFromSaved && !isDmWithMyself && compareServerVersion(serverVersion, 'greaterThanOrEqualTo', '6.4.0');
 
 	return (
 		<View style={styles.roomButtonsContainer}>
 			<BaseButton onPress={handleCreateDirectMessage} label={i18n.t('Message')} iconName='message' />
-			<CallButton isDirect={isDirect} rid={rid} roomFromRid={!!roomFromRid} />
+			{hasE2EEWarning ? null : <CallButton isDirect={isDirect} rid={rid} roomFromRid={!!roomFromRid} />}
 			<BaseButton
 				onPress={handleIgnoreUser}
 				label={i18n.t(isIgnored ? 'Unignore' : 'Ignore')}
 				iconName='ignore'
 				showIcon={!!renderIgnoreUser}
-				danger
 			/>
 			<BaseButton
 				onPress={handleBlockUser}
-				label={i18n.t(`${isBlocked ? 'Unblock' : 'Block'}_user`)}
+				label={i18n.t(`${isBlocked ? 'Unblock' : 'Block'}`)}
 				iconName='ignore'
 				showIcon={!!renderBlockUser}
-				danger
 			/>
+			<BaseButton onPress={handleReportUser} label={i18n.t('Report')} iconName='warning' showIcon={!!renderReportUser} danger />
 		</View>
 	);
 };

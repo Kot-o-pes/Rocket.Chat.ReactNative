@@ -5,14 +5,14 @@ import {
 	login,
 	sleep,
 	tapBack,
-	searchRoom,
 	logout,
 	platformTypes,
 	TTextMatcher,
 	tapAndWaitFor,
 	expectValidRegisterOrRetry,
 	mockMessage,
-	tryTapping
+	tryTapping,
+	navigateToRoom
 } from '../../helpers/app';
 import data from '../../data';
 import { createRandomUser, deleteCreatedUsers, IDeleteCreateUser, ITestUser } from '../../helpers/data_setup';
@@ -39,14 +39,6 @@ const checkBanner = async () => {
 		.toExist()
 		.withTimeout(10000);
 };
-
-async function navigateToRoom(roomName: string) {
-	await searchRoom(`${roomName}`);
-	await element(by.id(`rooms-list-view-item-${roomName}`)).tap();
-	await waitFor(element(by.id('room-view')))
-		.toBeVisible()
-		.withTimeout(5000);
-}
 
 async function waitForToast() {
 	await sleep(300);
@@ -179,11 +171,11 @@ describe('E2E Encryption', () => {
 				await expect(element(by.id('action-sheet-handle'))).toBeVisible();
 				await element(by.id('action-sheet-handle')).swipe('up', 'fast', 0.5);
 				await element(by[textMatcher]('Quote')).atIndex(0).tap();
-				await element(by.id('messagebox-input')).replaceText(quotedMessage);
-				await waitFor(element(by.id('messagebox-send-message')))
+				await element(by.id('message-composer-input')).replaceText(quotedMessage);
+				await waitFor(element(by.id('message-composer-send')))
 					.toExist()
 					.withTimeout(2000);
-				await element(by.id('messagebox-send-message')).tap();
+				await element(by.id('message-composer-send')).tap();
 				await waitFor(element(by[textMatcher](quotedMessage)).atIndex(0))
 					.toBeVisible()
 					.withTimeout(3000);
@@ -298,6 +290,9 @@ describe('E2E Encryption', () => {
 				await waitFor(element(by[textMatcher](mockedMessageText)).atIndex(0))
 					.not.toExist()
 					.withTimeout(2000);
+				// await waitFor(element(by.id('room-view-encrypted-room')))
+				// 	.toBeVisible()
+				// 	.withTimeout(2000);
 				await expect(element(by.label('Encrypted message')).atIndex(0)).toExist();
 			});
 
@@ -306,7 +301,7 @@ describe('E2E Encryption', () => {
 				await waitFor(element(by.id('rooms-list-view')))
 					.toBeVisible()
 					.withTimeout(2000);
-				// TODO: assert 'Enter Your E2E Password'
+				// TODO: assert 'Enter E2EE Password'
 				await waitFor(element(by.id('listheader-encryption')))
 					.toBeVisible()
 					.withTimeout(2000);
@@ -431,4 +426,6 @@ describe('E2E Encryption', () => {
 			await checkBanner();
 		});
 	});
+
+	// TODO: missing request e2ee room key
 });

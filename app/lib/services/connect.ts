@@ -9,7 +9,7 @@ import protectedFunction from '../methods/helpers/protectedFunction';
 import database from '../database';
 import { twoFactor } from './twoFactor';
 import { store } from '../store/auxStore';
-import { loginRequest, setLoginServices, setUser } from '../../actions/login';
+import { loginRequest, logout, setLoginServices, setUser } from '../../actions/login';
 import sdk from './sdk';
 import I18n from '../../i18n';
 import { ICredentials, ILoggedUser, STATUSES } from '../../definitions';
@@ -46,6 +46,7 @@ let usersListener: any;
 let notifyAllListener: any;
 let rolesListener: any;
 let notifyLoggedListener: any;
+let logoutListener: any;
 
 function connect({ server, logoutOnError = false }: { server: string; logoutOnError?: boolean }): Promise<void> {
 	return new Promise<void>(resolve => {
@@ -87,6 +88,10 @@ function connect({ server, logoutOnError = false }: { server: string; logoutOnEr
 
 		if (notifyLoggedListener) {
 			notifyLoggedListener.then(stopListener);
+		}
+
+		if (logoutListener) {
+			logoutListener.then(stopListener);
 		}
 
 		unsubscribeRooms();
@@ -138,25 +143,31 @@ function connect({ server, logoutOnError = false }: { server: string; logoutOnEr
 					const { _id, value } = ddpMessage.fields.args[1];
 					const db = database.active;
 					const settingsCollection = db.get('settings');
-					try {
-						const settingsRecord = await settingsCollection.find(_id);
-						// @ts-ignore
-						const { type } = defaultSettings[_id];
-						if (type) {
-							await db.write(async () => {
-								await settingsRecord.update(u => {
-									// @ts-ignore
-									u[type] = value;
-								});
-							});
-						}
-						store.dispatch(updateSettings(_id, value));
 
-						if (_id === 'Presence_broadcast_disabled') {
-							setPresenceCap(value);
+					// Check if the _id exists in defaultSettings
+					if (defaultSettings.hasOwnProperty(_id)) {
+						try {
+							const settingsRecord = await settingsCollection.find(_id);
+							// @ts-ignore
+							const { type } = defaultSettings[_id];
+							if (type) {
+								await db.write(async () => {
+									await settingsRecord.update(u => {
+										// @ts-ignore
+										u[type] = value;
+									});
+								});
+							}
+							store.dispatch(updateSettings(_id, value));
+
+							if (_id === 'Presence_broadcast_disabled') {
+								setPresenceCap(value);
+							}
+						} catch (e) {
+							log(e);
 						}
-					} catch (e) {
-						log(e);
+					} else {
+						console.warn(`Setting with _id '${_id}' is not present in defaultSettings.`);
 					}
 				}
 			})
@@ -264,6 +275,8 @@ function connect({ server, logoutOnError = false }: { server: string; logoutOnEr
 			})
 		);
 
+		logoutListener = sdk.current.onStreamData('stream-force_logout', () => store.dispatch(logout(true)));
+
 		resolve();
 	});
 }
@@ -304,7 +317,8 @@ async function login(credentials: ICredentials, isFromWebView = false): Promise<
 			enableMessageParserEarlyAdoption,
 			alsoSendThreadToChannel: result.me.settings?.preferences?.alsoSendThreadToChannel,
 			bio: result.me.bio,
-			nickname: result.me.nickname
+			nickname: result.me.nickname,
+			requirePasswordChange: result.me.requirePasswordChange
 		};
 		return user;
 	}

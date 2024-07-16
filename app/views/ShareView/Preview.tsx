@@ -17,7 +17,7 @@ import { TSupportedThemes } from '../../theme';
 import { themes } from '../../lib/constants';
 import { IShareAttachment } from '../../definitions';
 
-const MESSAGEBOX_HEIGHT = 56;
+const MESSAGE_COMPOSER_HEIGHT = 56;
 
 const styles = StyleSheet.create({
 	fileContainer: {
@@ -48,12 +48,16 @@ interface IIconPreview {
 
 const IconPreview = React.memo(({ iconName, title, description, theme, width, height, danger }: IIconPreview) => (
 	<ScrollView
-		style={{ backgroundColor: themes[theme].auxiliaryBackground }}
+		style={{ backgroundColor: themes[theme].surfaceNeutral }}
 		contentContainerStyle={[styles.fileContainer, { width, height }]}
 	>
-		<CustomIcon name={iconName} size={56} color={danger ? themes[theme].dangerColor : themes[theme].tintColor} />
-		<Text style={[styles.fileName, { color: themes[theme].titleText }]}>{title}</Text>
-		{description ? <Text style={[styles.fileSize, { color: themes[theme].bodyText }]}>{description}</Text> : null}
+		<CustomIcon
+			name={iconName}
+			size={56}
+			color={danger ? themes[theme].buttonBackgroundDangerDefault : themes[theme].badgeBackgroundLevel2}
+		/>
+		<Text style={[styles.fileName, { color: themes[theme].fontTitlesLabels }]}>{title}</Text>
+		{description ? <Text style={[styles.fileSize, { color: themes[theme].fontDefault }]}>{description}</Text> : null}
 	</ScrollView>
 ));
 
@@ -70,7 +74,7 @@ const Preview = React.memo(({ item, theme, isShareExtension, length }: IPreview)
 	const insets = useSafeAreaInsets();
 	const headerHeight = useHeaderHeight();
 	const thumbsHeight = length > 1 ? THUMBS_HEIGHT : 0;
-	const calculatedHeight = height - insets.top - insets.bottom - MESSAGEBOX_HEIGHT - thumbsHeight - headerHeight;
+	const calculatedHeight = height - insets.top - insets.bottom - MESSAGE_COMPOSER_HEIGHT - thumbsHeight - headerHeight;
 
 	if (item?.canUpload) {
 		// Disable video preview on iOS to save memory

@@ -64,6 +64,7 @@ export interface IMessageContent {
 	hasError: boolean;
 	isHeader: boolean;
 	isTranslated: boolean;
+	pinned?: boolean;
 }
 
 export interface IMessageEmoji {
@@ -90,6 +91,7 @@ export interface IMessageTouchable {
 	alias?: string;
 	role?: string;
 	drid?: string;
+	isBeingEdited?: boolean;
 }
 
 export interface IMessageRepliedThread extends Pick<IThread, 'tmid' | 'tmsg' | 'id'> {

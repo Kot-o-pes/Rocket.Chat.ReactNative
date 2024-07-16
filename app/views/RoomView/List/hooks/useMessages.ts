@@ -2,8 +2,9 @@ import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { Q } from '@nozbe/watermelondb';
 import { Subscription } from 'rxjs';
 
-import { TAnyMessageModel, TThreadModel } from '../../../../definitions';
+import { TAnyMessageModel } from '../../../../definitions';
 import database from '../../../../lib/database';
+import { getMessageById } from '../../../../lib/database/services/Message';
 import { getThreadById } from '../../../../lib/database/services/Thread';
 import { animateNextTransition, compareServerVersion, isIOS, useDebounce } from '../../../../lib/methods/helpers';
 import { Services } from '../../../../lib/services';
@@ -23,7 +24,7 @@ export const useMessages = ({
 	hideSystemMessages: string[];
 }) => {
 	const [messages, setMessages] = useState<TAnyMessageModel[]>([]);
-	const thread = useRef<TThreadModel | null>(null);
+	const thread = useRef<TAnyMessageModel | null>(null);
 	const count = useRef(0);
 	const subscription = useRef<Subscription | null>(null);
 	const messagesIds = useRef<string[]>([]);
@@ -39,20 +40,23 @@ export const useMessages = ({
 		const db = database.active;
 		let observable;
 		if (tmid) {
-			if (!thread.current) {
+			// If the thread doesn't exist yet, we fetch it from messages, but trying to get it from threads when possible.
+			// As soon as we have it from threads table, we use it from cache only and never query again.
+			if (!thread.current || thread.current.collection.table !== 'threads') {
 				thread.current = await getThreadById(tmid);
+				if (!thread.current) {
+					thread.current = await getMessageById(tmid);
+				}
 			}
 			observable = db
 				.get('thread_messages')
-				.query(Q.where('rid', tmid), Q.experimentalSortBy('ts', Q.desc), Q.experimentalSkip(0), Q.experimentalTake(count.current))
+				.query(Q.where('rid', tmid), Q.sortBy('ts', Q.desc), Q.skip(0), Q.take(count.current))
 				.observe();
 		} else {
-			const whereClause = [
-				Q.where('rid', rid),
-				Q.experimentalSortBy('ts', Q.desc),
-				Q.experimentalSkip(0),
-				Q.experimentalTake(count.current)
-			] as (Q.WhereDescription | Q.Or)[];
+			const whereClause = [Q.where('rid', rid), Q.sortBy('ts', Q.desc), Q.skip(0), Q.take(count.current)] as (
+				| Q.WhereDescription
+				| Q.Or
+			)[];
 			if (!showMessageInMainThread) {
 				whereClause.push(Q.or(Q.where('tmid', null), Q.where('tshow', Q.eq(true))));
 			}

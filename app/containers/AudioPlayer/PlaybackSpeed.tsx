@@ -4,11 +4,10 @@ import { Text } from 'react-native';
 import styles from './styles';
 import { useTheme } from '../../theme';
 import { AUDIO_PLAYBACK_SPEED, AVAILABLE_SPEEDS } from './constants';
-import { TAudioState } from './types';
 import { useUserPreferences } from '../../lib/methods';
 import NativeButton from '../NativeButton';
 
-const PlaybackSpeed = ({ audioState }: { audioState: TAudioState }) => {
+const PlaybackSpeed = () => {
 	const [playbackSpeed, setPlaybackSpeed] = useUserPreferences<number>(AUDIO_PLAYBACK_SPEED, AVAILABLE_SPEEDS[1]);
 	const { colors } = useTheme();
 
@@ -20,10 +19,8 @@ const PlaybackSpeed = ({ audioState }: { audioState: TAudioState }) => {
 
 	return (
 		<NativeButton
-			disabled={audioState !== 'playing'}
 			onPress={onPress}
-			style={[styles.containerPlaybackSpeed, { backgroundColor: colors.buttonBackgroundSecondaryDefault }]}
-		>
+			style={[styles.containerPlaybackSpeed, { backgroundColor: colors.buttonBackgroundSecondaryDefault }]}>
 			<Text style={[styles.playbackSpeedText, { color: colors.buttonFontSecondary }]}>{playbackSpeed}x</Text>
 		</NativeButton>
 	);

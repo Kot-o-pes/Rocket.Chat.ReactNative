@@ -8,6 +8,8 @@ import { TThreadMessageModel } from './IThreadMessage';
 import { TThreadModel } from './IThread';
 import { IUrl, IUrlFromServer } from './IUrl';
 
+export type TMessageAction = 'quote' | 'edit' | 'react' | null;
+
 export type MessageType =
 	| 'jitsi_call_started'
 	| 'discussion-created'
@@ -78,6 +80,11 @@ interface IMessageFile {
 	type: string;
 }
 
+export type IMessageE2EEContent = {
+	algorithm: 'rc.v1.aes-sha2';
+	ciphertext: string; // Encrypted subset JSON of IMessage
+};
+
 export interface IMessageFromServer {
 	_id: string;
 	rid: string;
@@ -105,6 +112,7 @@ export interface IMessageFromServer {
 		username: string;
 	};
 	score?: number;
+	content?: IMessageE2EEContent;
 }
 
 export interface ILoadMoreMessage {

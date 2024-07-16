@@ -124,12 +124,13 @@ const DiscussionsView = ({ navigation, route }: IDiscussionsViewProps): React.Re
 		options = {
 			headerTitleAlign: 'center',
 			headerTitle: I18n.t('Discussions'),
+			headerTitleContainerStyle: {},
 			headerRightContainerStyle: { flexGrow: 1 },
 			headerLeft: () => (
 				<HeaderBackButton
 					labelVisible={false}
 					onPress={() => navigation.pop()}
-					tintColor={colors.headerTintColor}
+					tintColor={colors.fontSecondaryInfo}
 					testID='header-back'
 				/>
 			),
@@ -187,7 +188,7 @@ const DiscussionsView = ({ navigation, route }: IDiscussionsViewProps): React.Re
 				data={isSearching ? search : discussions}
 				renderItem={renderItem}
 				keyExtractor={(item: any) => item._id}
-				style={{ backgroundColor: colors.backgroundColor }}
+				style={{ backgroundColor: colors.surfaceRoom }}
 				contentContainerStyle={styles.contentContainer}
 				onEndReachedThreshold={0.5}
 				removeClippedSubviews={isIOS}

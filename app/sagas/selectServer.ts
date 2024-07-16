@@ -42,7 +42,7 @@ import {
 	setSettings
 } from '../lib/methods';
 import { Services } from '../lib/services';
-import { connect } from '../lib/services/connect';
+import { connect, disconnect } from '../lib/services/connect';
 import { appSelector } from '../lib/hooks';
 import { getServerById } from '../lib/database/services/Server';
 import { getLoggedUserById } from '../lib/database/services/LoggedUser';
@@ -129,6 +129,10 @@ const getServerInfoSaga = function* getServerInfoSaga({ server, raiseError = tru
 		});
 		yield put(setSupportedVersions(supportedVersionsResult));
 
+		if (supportedVersionsResult.status === 'expired') {
+			disconnect();
+		}
+
 		return serverRecord;
 	} catch (e) {
 		log(e);
@@ -163,7 +167,8 @@ const handleSelectServer = function* handleSelectServer({ server, version, fetch
 					roles: userRecord.roles,
 					avatarETag: userRecord.avatarETag,
 					bio: userRecord.bio,
-					nickname: userRecord.nickname
+					nickname: userRecord.nickname,
+					requirePasswordChange: userRecord.requirePasswordChange
 				};
 			} else {
 				const token = UserPreferences.getString(`${TOKEN_KEY}-${userId}`);

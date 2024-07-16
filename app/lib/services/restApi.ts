@@ -76,7 +76,7 @@ export const e2eUpdateGroupKey = (uid: string, rid: string, key: string): any =>
 
 export const e2eRequestRoomKey = (rid: string, e2eKeyId: string): Promise<{ message: { msg?: string }; success: boolean }> =>
 	// RC 0.70.0
-	sdk.methodCallWrapper('stream-notify-room-users', `${rid}/e2ekeyRequest`, rid, e2eKeyId);
+	sdk.methodCall('stream-notify-room-users', `${rid}/e2ekeyRequest`, rid, e2eKeyId);
 
 export const e2eAcceptSuggestedGroupKey = (rid: string): Promise<{ success: boolean }> =>
 	// RC 5.5
@@ -295,6 +295,10 @@ export const togglePinMessage = (messageId: string, pinned?: boolean) => {
 	// RC 0.59.0
 	return sdk.post('chat.pinMessage', { messageId });
 };
+
+export const reportUser = (userId: string, description: string) =>
+	// RC 6.4.0
+	sdk.post('moderation.reportUser', { userId, description });
 
 export const reportMessage = (messageId: string) =>
 	// RC 0.64.0
@@ -866,8 +870,8 @@ export function e2eResetOwnKey(): Promise<boolean | {}> {
 	return sdk.methodCallWrapper('e2e.resetOwnE2EKey');
 }
 
-export const editMessage = async (message: IMessage) => {
-	const { rid, msg } = await Encryption.encryptMessage(message);
+export const editMessage = async (message: Pick<IMessage, 'id' | 'msg' | 'rid'>) => {
+	const { rid, msg } = await Encryption.encryptMessage(message as IMessage);
 	// RC 0.49.0
 	return sdk.post('chat.update', { roomId: rid, msgId: message.id, text: msg });
 };
@@ -900,6 +904,12 @@ export const removePushToken = (): Promise<boolean | void> => {
 	}
 	return Promise.resolve();
 };
+
+// RC 6.6.0
+export const pushTest = () => sdk.post('push.test');
+
+// RC 6.5.0
+export const pushInfo = () => sdk.get('push.info');
 
 export const sendEmailCode = () => {
 	const { username } = reduxStore.getState().login.user as IUser;
@@ -1002,3 +1012,5 @@ export const getUsersRoles = (): Promise<boolean> => sdk.methodCall('getUserRole
 
 export const getSupportedVersionsCloud = (uniqueId?: string, domain?: string) =>
 	fetch(`https://releases.rocket.chat/v2/server/supportedVersions?uniqueId=${uniqueId}&domain=${domain}&source=mobile`);
+
+export const setUserPassword = (password: string) => sdk.methodCall('setUserPassword', password);

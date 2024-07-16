@@ -196,8 +196,14 @@ export type ModalStackParamList = {
 	SecurityPrivacyView: undefined;
 	MediaAutoDownloadView: undefined;
 	E2EEncryptionSecurityView: undefined;
+	PushTroubleshootView: undefined;
 	SupportedVersionsWarning: {
 		showCloseButton?: boolean;
+	};
+	ReportUserView: {
+		username: string;
+		userId: string;
+		name: string;
 	};
 };
 

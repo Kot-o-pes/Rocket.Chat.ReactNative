@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { Switch } from 'react-native';
 
 import * as List from '../containers/List';
 import SafeAreaView from '../containers/SafeAreaView';
@@ -105,17 +104,13 @@ const SecurityPrivacyView = ({ navigation }: ISecurityPrivacyViewProps): JSX.Ele
 							<List.Item
 								title='Log_analytics_events'
 								testID='security-privacy-view-analytics-events'
-								right={() => (
-									<Switch value={analyticsEventsState} trackColor={SWITCH_TRACK_COLOR} onValueChange={toggleAnalyticsEvents} />
-								)}
+								right={() => <Switch value={analyticsEventsState} onValueChange={toggleAnalyticsEvents} />}
 							/>
 							<List.Separator />
 							<List.Item
 								title='Send_crash_report'
 								testID='security-privacy-view-crash-report'
-								right={() => (
-									<Switch value={crashReportState} trackColor={SWITCH_TRACK_COLOR} onValueChange={toggleCrashReport} />
-								)}
+								right={() => <Switch value={crashReportState} onValueChange={toggleCrashReport} />}
 							/>
 							<List.Separator />
 							<List.Item title='Privacy_Policy' onPress={onPressPrivacyPolicy} showActionIndicator />
