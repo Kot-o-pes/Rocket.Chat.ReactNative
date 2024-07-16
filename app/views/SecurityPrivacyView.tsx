@@ -6,7 +6,7 @@ import * as List from '../containers/List';
 import SafeAreaView from '../containers/SafeAreaView';
 import StatusBar from '../containers/StatusBar';
 import I18n from '../i18n';
-import { ANALYTICS_EVENTS_KEY, CRASH_REPORT_KEY, isFDroidBuild } from '../lib/constants';
+import { ANALYTICS_EVENTS_KEY, CRASH_REPORT_KEY, isFDroidBuild, PRIVACY_POLICY_LINK, SWITCH_TRACK_COLOR } from '../lib/constants';
 import { useAppSelector } from '../lib/hooks';
 import useServer from '../lib/methods/useServer';
 import { SettingsStackParamList } from '../stacks/types';
@@ -19,7 +19,8 @@ import {
 	toggleAnalyticsEventsReport,
 	toggleCrashErrorsReport
 } from '../lib/methods/helpers/log';
-import Switch from '../containers/Switch';
+import openLink from "../lib/methods/helpers/openLink";
+import {useTheme} from "../theme";
 
 interface ISecurityPrivacyViewProps {
 	navigation: StackNavigationProp<SettingsStackParamList, 'SecurityPrivacyView'>;
@@ -29,6 +30,7 @@ const SecurityPrivacyView = ({ navigation }: ISecurityPrivacyViewProps): JSX.Ele
 	const [crashReportState, setCrashReportState] = useState(getReportCrashErrorsValue());
 	const [analyticsEventsState, setAnalyticsEventsState] = useState(getReportAnalyticsEventsValue());
 	const [server] = useServer();
+	const { theme } = useTheme();
 
 	const e2eEnabled = useAppSelector(state => state.settings.E2E_Enable);
 
@@ -63,6 +65,10 @@ const SecurityPrivacyView = ({ navigation }: ISecurityPrivacyViewProps): JSX.Ele
 			await handleLocalAuthentication(true);
 		}
 		navigateToScreen('ScreenLockConfigView');
+	};
+
+	const onPressPrivacyPolicy = () => {
+		openLink(PRIVACY_POLICY_LINK, theme);
 	};
 
 	return (
@@ -106,6 +112,8 @@ const SecurityPrivacyView = ({ navigation }: ISecurityPrivacyViewProps): JSX.Ele
 								testID='security-privacy-view-crash-report'
 								right={() => <Switch value={crashReportState} onValueChange={toggleCrashReport} />}
 							/>
+							<List.Separator />
+							<List.Item title='Privacy_Policy' onPress={onPressPrivacyPolicy} showActionIndicator />
 							<List.Separator />
 							<List.Info info='Crash_report_disclaimer' />
 						</List.Section>
